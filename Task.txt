@@ -1,0 +1,21 @@
+Spatial Data Analyzer
+
+Create a program that analyzes spatial data. Being able to determine the frequency and distance between points has all kinds of applications, from computer graphics to machine learning. In this project, the spatial data will be given to you in the form of points, either 2D (x, y) or 3D (x, y, z) - and you will need to receive the data input by uploading a file.
+
+You can download the file that you'll need to add to your program here.
+
+How to do you begin and read this file in your project?
+
+    Create your project on Replit
+    Upload the .txt file to the file system (on the left) of your project
+    You can look at zyBooks Chapter 9.5 for further instructions on how to read data from an external txt file. Also, you can check out this example code: https://replit.com/@mab253/read-file-example#main.cpp
+
+After the file upload, your program will need to analyze and output the following:
+
+    Count the number of 2D points in the uploaded file
+    Count the number of 3D points in the uploaded file
+    Count the frequency of 2D points - how many points in the dataset have the same (x, y)?
+    Count the frequency of 3D points - how many points in the dataset have the same (x, y, z)?
+    Calculate the farthest distance between two 2D points in the dataset
+    Calculate the farthest distance between two 3D points in the dataset
+    Write at least 6 functions outside of main to accomplish these tasks
