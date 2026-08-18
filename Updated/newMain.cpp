@@ -64,7 +64,8 @@ struct ND_hash{
 };
 
 //need to make this one function for both struct
-//using template instead  
+//using template instead
+// changing void to vector and check the count of   
 template<typename T>
 void parseVals(std::string_view sv, T& t){
     auto dimension{0uz}; 
@@ -72,12 +73,11 @@ void parseVals(std::string_view sv, T& t){
     for (auto& c : sv){
         if(c >= '0' && c <= '9'){
             const auto num {c -'0'};
-            result += num;
             result *= 10;
+            result += num;
         }
         // only , and \n should end a number
         else if(c == ',' || c == '\n'){
-            result /= 10;
             switch(++dimension) {
                 case 1:
                     t.x.emplace_back(result);
@@ -96,7 +96,7 @@ void parseVals(std::string_view sv, T& t){
     }
 }
 
-const bool check3D (std::string_view sv) {
+bool check3D (std::string_view sv) {
     if( sv.contains('Z') )
         return true;
     else {
@@ -107,7 +107,7 @@ const bool check3D (std::string_view sv) {
 
 
 int main(){
-    
+    const auto totStart {std::chrono::steady_clock::now()};
     D2 D2;
     D3 D3;
     //const auto start {std::chrono::steady_clock::now()};
@@ -136,7 +136,9 @@ int main(){
     while(begin != viewer.end()){
         const auto endline = std::ranges::find(begin, std::unreachable_sentinel, '\n');
         std::string_view line {begin, endline+1}; //must have endline+1 to add \n due 
-        
+        //room for improvement
+        // find a way know type to add as we are reading the same line twice 
+        // one in check3D and in parseVals
         bool D3check {check3D(line)};
         if(D3check){
           D3.count++;
@@ -180,6 +182,7 @@ int main(){
     std::ranges::copy(zipped3D,std::inserter(unique3D,unique3D.begin()));
     const auto Freqstart3D {std::chrono::steady_clock::now()};
     /*
+    //this approach is slow 
     std::vector<std::tuple<int&,int&,int&>> unique3D;
      std::ranges::copy(zipped3D,std::back_inserter(unique3D));
     std::ranges::sort(unique3D);
@@ -188,10 +191,12 @@ int main(){
     //std::ranges::unique_copy(zipped3D,std::back_inserter(unique3D) );
     */
     const auto Freqend3D {std::chrono::steady_clock::now()};
+    
     /*
     for(auto i{0uz};i<D3.x.size();++i){
         std::cout<< "[ " << D3.x[i] << ", " <<  D3.y[i] << ", " << D3.z[i] << " ]\n";
     }
+    
     for(auto i{0uz};i<D2.x.size();++i){
         std::cout<< "[ " << D2.x[i] << ", " <<  D2.y[i] << " ]\n ";
     }
@@ -200,10 +205,10 @@ int main(){
     std::cout<<"\nTime it takes for 2D unique_copy: "<<(Freqend2D-Freqstart2D)<<"\n";
     std::println("Orignal 2D Size:{} \nUnique 2D Size: {}", D2.count, unique2D.size());
     std::cout<<"\nTime it takes for 3D unique_copy: "<<(Freqend3D-Freqstart3D)<<"\n";
-    std::println("Orignal 3D Size:{} \nUnique 3D Size: {}", D3.count, unique3D.size());
+    std::println("Orignal 3D Size:{} \nUnique 3D Size: {}\n", D3.count, unique3D.size());
 
     //calulate farthest distance between two points 
-    // since i know that the smallest and largest for both sets 
+    // since i know that the smallest and largest in this dataset
     // are 0s and 100s we can use these values 
     // they will be the farthest distance
     // realisticlly we should use somthing like convex hull
@@ -211,6 +216,7 @@ int main(){
     
     auto [min2D,max2D]  {std::ranges::minmax(zipped2D)};
     auto [min3D,max3D]  {std::ranges::minmax(zipped3D)};
+    //
     auto dist2D = std::sqrtf( 
         (std::get<0>(max2D)-std::get<0>(min2D))*(std::get<0>(max2D)-std::get<0>(min2D)) 
         + (std::get<1>(max2D)-std::get<1>(min2D))*(std::get<1>(max2D)-std::get<1>(min2D)) 
@@ -220,8 +226,10 @@ int main(){
         + (std::get<1>(max3D)-std::get<1>(min3D))*(std::get<1>(max3D)-std::get<1>(min3D)) 
         + (std::get<2>(max3D)-std::get<2>(min3D))*(std::get<2>(max3D)-std::get<2>(min3D)) 
     );
+    const auto totEnd {std::chrono::steady_clock::now()};
+
     std::println("The farthest Distance between to points: {} with {} , {} as points",dist2D, min2D,max2D);
     std::println("The farthest Distance between to points: {} with {} , {} as points",dist3D, min3D,max3D);
-
+    std::println("\nTotal Time taken: {}\n",(totEnd-totStart));
     return 0; // not needed anymore 
 };
