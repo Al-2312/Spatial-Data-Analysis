@@ -33,7 +33,7 @@ Using Linux `perf` (`stat`, `record --call-graph`), bottlenecks were identified.
 
 ## Build Instructions
 ### Prerequisites
-* A Linux environment (requires `sys/mman.h` for memory mapping).
+* A Linux environment (requires `sys/mman.h` for memory mapping (i.e `mmap`).
 * A compiler supporting C++23 perferably clang 18+
 
 ### Compilation
